@@ -3,7 +3,7 @@
 
     window.fbAsyncInit = function() {
       FB.init({
-        appId: "1847693285464674",
+        appId: "1391047930989266",
         xfbml: true,
         version: "v2.6"
       });
@@ -11,6 +11,12 @@
       FB.Event.subscribe('send_to_messenger', function(e) {
         // callback for events triggered by the plugin
         console.log(e);
+        var eventName = e.event;
+        var userHasAuth = eventName == 'opt_in';
+        
+        if(userHasAuth){
+          window.alert('Hello world message sent to you.');
+        }
       });
     };
 
@@ -24,7 +30,7 @@
   </script>
 
   <div class="fb-send-to-messenger" 
-    messenger_app_id="1847693285464674" 
+    messenger_app_id="1391047930989266" 
     page_id="1582722098684919" 
     data-ref="lalala" 
     color="blue" 
