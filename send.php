@@ -28,6 +28,14 @@ foreach($userIds as $userId){
 $webhookLog = getWebhookLog();
 
 ?>
+<style>
+  pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+  }
+</style>
 <h3>Send message to customer</h3>
 <ul>User List
   <?php foreach($userInfos as $userInfo): ?>
