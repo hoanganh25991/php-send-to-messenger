@@ -1,34 +1,58 @@
-<body>
-  <script>
+<?php
+require_once "./util.php";
 
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId: "1847693285464674",
-        xfbml: true,
-        version: "v2.6"
-      });
+// Handle post case
+// Send msg
+if(isPost()){
+  $user_id = $_POST['user_id'];
+  $message_text = $_POST['message_text'];
+  sendMessage($user_id, $message_text);
 
-      FB.Event.subscribe('send_to_messenger', function(e) {
-        // callback for events triggered by the plugin
-        console.log(e);
-      });
-    };
+  echo "Send msg success";
+}
 
-    (function(d, s, id){
-       var js, fjs = d.getElementsByTagName(s)[0];
-       if (d.getElementById(id)) { return; }
-       js = d.createElement(s); js.id = id;
-       js.src = "//connect.facebook.net/en_US/sdk.js";
-       fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-  </script>
+// Read from log
+$userIds = getUserMessengerIds();
 
-  <div class="fb-send-to-messenger" 
-    messenger_app_id="1847693285464674" 
-    page_id="1582722098684919" 
-    data-ref="lalala" 
-    color="blue" 
-    size="standard"
-    enforce_login="true">
-  </div>
-</body>
+// Get user info of these guy
+$userInfos = [];
+
+foreach($userIds as $userId){
+  $userInfo = getUserInfo($userId);
+  if(!is_null($userInfo)){
+    $userInfo['user_id'] = $userId;
+    $userInfos[] = $userInfo;
+  }
+}
+
+$webhookLog = getWebhookLog();
+
+?>
+<h3>Send message to customer</h3>
+<ul>User List
+  <?php foreach($userInfos as $userInfo): ?>
+    <?php $i = $userInfo['user_id']; $f = $userInfo['first_name']; $l = $userInfo['last_name']; $p = $userInfo['profile_pic']; $g = $userInfo['gender']?>
+    <li>
+      <form method="POST">
+        <div>to</div>
+        <input type="hidden" name="user_id" value="<?php echo $i; ?>" />
+        <div style="display: flex;">
+          <img src="<?php echo $p; ?>" width="40" height="40" />
+          <div>
+            <div><?php echo "$f $l"; ?></div>
+            <div><?php echo $g; ?></div>
+          </div>
+        </div>
+        <input type="text" name="message_text" placeholder="message" />
+        <button>Send</button>
+      </form>
+    </li>
+  <?php endforeach; ?>
+</ul>
+
+<h3>Conversation Log</h3>
+<button onclick="window.location.href = '';">Refresh</button>
+<pre style="border: 1px dashed black;">
+  <?php echo $webhookLog; ?>
+</pre>
+
